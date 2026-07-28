@@ -75,6 +75,11 @@ export default function Root({ children }: { children: React.ReactNode }) {
         />
         <title>Gia Gelatería</title>
         <link rel="icon" href="/favicon.ico" />
+        {/* Acelera los embeds cuando llegan a cargarse */}
+        <link rel="preconnect" href="https://www.instagram.com" />
+        <link rel="preconnect" href="https://www.google.com" />
+        <link rel="dns-prefetch" href="https://www.instagram.com" />
+        <link rel="dns-prefetch" href="https://www.google.com" />
 
         {/* Vista previa al compartir (WhatsApp, redes) — Open Graph */}
         <meta

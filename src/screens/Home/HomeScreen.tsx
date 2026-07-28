@@ -22,6 +22,7 @@ import { MiniCartBar } from '../../components/MiniCartBar';
 import { RappiLogo } from '../../components/RappiLogo';
 import { ProductCard } from '../../components/ProductCard/ProductCard';
 import { GridProductCard } from '../../components/ProductCard/GridProductCard';
+import { LazyMount } from '../../components/LazyMount';
 import { WebFrame } from '../../components/WebFrame';
 import { CategoryChip } from '../../components/CategoryChip/CategoryChip';
 import {
@@ -370,7 +371,9 @@ export const HomeScreen: React.FC = () => {
           <Text style={[typography.caption, styles.sectionText]}>{BUSINESS.address}</Text>
           {Platform.OS === 'web' && (
             <View style={styles.mapWrap}>
-              <WebFrame src={MAP_EMBED_URL} title="Mapa — Gia Gelatería" height={260} />
+              <LazyMount placeholderStyle={styles.mapPlaceholder}>
+                <WebFrame src={MAP_EMBED_URL} title="Mapa — Gia Gelatería" height={260} />
+              </LazyMount>
             </View>
           )}
           <View style={styles.pillsRow}>
@@ -393,12 +396,14 @@ export const HomeScreen: React.FC = () => {
             >
               {IG_POSTS.map((post) => (
                 <View key={post} style={styles.igCard}>
-                  <WebFrame
-                    src={`https://www.instagram.com/${post}/embed/captioned/`}
-                    title={`Instagram — ${post}`}
-                    height={470}
-                    width={IG_CARD_WIDTH}
-                  />
+                  <LazyMount placeholderStyle={styles.igPlaceholder}>
+                    <WebFrame
+                      src={`https://www.instagram.com/${post}/embed/captioned/`}
+                      title={`Instagram — ${post}`}
+                      height={470}
+                      width={IG_CARD_WIDTH}
+                    />
+                  </LazyMount>
                 </View>
               ))}
             </ScrollView>
@@ -587,6 +592,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.chipActiveBorder,
     marginBottom: 14,
+  },
+  mapPlaceholder: {
+    height: 260,
+    backgroundColor: colors.chipActiveBg,
+  },
+  igPlaceholder: {
+    width: IG_CARD_WIDTH,
+    height: 470,
+    backgroundColor: colors.white,
   },
   igScroll: {
     flexGrow: 0,
