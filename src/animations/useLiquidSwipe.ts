@@ -71,15 +71,23 @@ export const useLiquidSwipe = ({
   const onIndexChangeRef = useRef(onIndexChange);
   onIndexChangeRef.current = onIndexChange;
 
-  /** JS-thread commit: advance index and reset the drag offset in the same tick. */
-  const finish = useCallback((direction: 1 | -1) => {
-    setLastDirection(direction);
-    setIndex((prev) => {
-      const next = (prev + direction + countRef.current) % countRef.current;
-      return next;
-    });
-    offset.value = 0;
-  }, [offset]);
+  /**
+   * Commit inmediato en el hilo JS. Antes el cambio de producto dependía del
+   * callback de finalización del spring, que en web puede no dispararse — la
+   * imagen se deslizaba pero el producto (nombre/precio) no cambiaba. Ahora
+   * el índice avanza apenas el gesto cruza el umbral, y el offset se
+   * recoloca para que el nuevo producto entre desde donde venía el vecino.
+   */
+  const commit = useCallback(
+    (direction: 1 | -1, fromX: number) => {
+      setLastDirection(direction);
+      setIndex((prev) => (prev + direction + countRef.current) % countRef.current);
+      const w = widthRef.current;
+      offset.value = fromX + (direction === 1 ? w : -w);
+      offset.value = withSpring(0, SPRING_COMMIT);
+    },
+    [offset],
+  );
 
   useEffect(() => {
     onIndexChangeRef.current?.(index);
@@ -100,17 +108,11 @@ export const useLiquidSwipe = ({
       const vx = e.velocityX;
       const threshold = w * 0.4;
       if (x <= -threshold || vx < -550) {
-        // Commit — next product. Spring overshoot sells the liquid feel.
-        offset.value = withSpring(-w, { ...SPRING_COMMIT, velocity: vx }, (finished) => {
-          'worklet';
-          if (finished) runOnJS(finish)(1);
-        });
+        // Commit — next product (el índice cambia ya, sin esperar al spring).
+        runOnJS(commit)(1, x);
       } else if (x >= threshold || vx > 550) {
         // Commit — previous product.
-        offset.value = withSpring(w, { ...SPRING_COMMIT, velocity: vx }, (finished) => {
-          'worklet';
-          if (finished) runOnJS(finish)(-1);
-        });
+        runOnJS(commit)(-1, x);
       } else {
         // Elastic snap-back.
         offset.value = withSpring(0, { ...SPRING_SNAP_BACK, velocity: vx });

@@ -3,6 +3,7 @@ import {
   FlatList,
   Image,
   Linking,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -20,6 +21,7 @@ import { AppBackground } from '../../components/AppBackground';
 import { MiniCartBar } from '../../components/MiniCartBar';
 import { RappiLogo } from '../../components/RappiLogo';
 import { ProductCard } from '../../components/ProductCard/ProductCard';
+import { WebFrame } from '../../components/WebFrame';
 import { CategoryChip } from '../../components/CategoryChip/CategoryChip';
 import {
   ArrowRightIcon,
@@ -48,6 +50,16 @@ const PATTERN_IMAGE = require('../../assets/gia-pattern.jpg');
 
 /** Margen lateral que deja la tarjeta enfocada centrada en pantalla. */
 const CAROUSEL_INSET = Math.max(16, Math.round((metrics.screen.width - CARD_WIDTH) / 2));
+
+/** Publicaciones embebidas de @giagelateria (iframe oficial de Instagram). */
+const IG_POSTS = ['p/DO3tLdiDn5X', 'reel/DZ5bkHHJ2Yd', 'p/DYUvzmUjodq'] as const;
+
+/** Mapa de Google embebido (sin API key) apuntando al local. */
+const MAP_EMBED_URL = `https://www.google.com/maps?q=${encodeURIComponent(
+  'Centro Historico, Calle Baloco, CL. 33, Gia gelateria, Cartagena, Colombia 130001',
+)}&output=embed&hl=es`;
+
+const IG_CARD_WIDTH = Math.min(330, metrics.screen.width - metrics.paddingHome * 2);
 
 /** The carousel opens on the featured flavor. */
 const FEATURED_INDEX = productIndexById(FEATURED_PRODUCT_ID);
@@ -320,6 +332,11 @@ export const HomeScreen: React.FC = () => {
         <View style={styles.section}>
           <SectionHeading title="Visítanos" />
           <Text style={[typography.caption, styles.sectionText]}>{BUSINESS.address}</Text>
+          {Platform.OS === 'web' && (
+            <View style={styles.mapWrap}>
+              <WebFrame src={MAP_EMBED_URL} title="Mapa — Gia Gelatería" height={260} />
+            </View>
+          )}
           <View style={styles.pillsRow}>
             <LinkPill gold label="Cómo llegar" onPress={() => openLink(BUSINESS.mapsUrl)} />
           </View>
@@ -331,6 +348,25 @@ export const HomeScreen: React.FC = () => {
           <Text style={[typography.caption, styles.sectionText]}>
             {`${BUSINESS.instagramHandle} · WhatsApp ${BUSINESS.whatsappDisplay}`}
           </Text>
+          {Platform.OS === 'web' && (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.igScroll}
+              contentContainerStyle={styles.igRow}
+            >
+              {IG_POSTS.map((post) => (
+                <View key={post} style={styles.igCard}>
+                  <WebFrame
+                    src={`https://www.instagram.com/${post}/embed/captioned/`}
+                    title={`Instagram — ${post}`}
+                    height={470}
+                    width={IG_CARD_WIDTH}
+                  />
+                </View>
+              ))}
+            </ScrollView>
+          )}
           <View style={styles.pillsRow}>
             <LinkPill label="Instagram" onPress={() => openLink(BUSINESS.instagramUrl)} />
             <LinkPill label="Facebook" onPress={() => openLink(BUSINESS.facebookUrl)} />
@@ -496,6 +532,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
+  },
+  mapWrap: {
+    borderRadius: 24,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: colors.chipActiveBorder,
+    marginBottom: 14,
+  },
+  igScroll: {
+    flexGrow: 0,
+    marginBottom: 16,
+  },
+  igRow: {
+    gap: 14,
+  },
+  igCard: {
+    borderRadius: 24,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: colors.chipActiveBorder,
+    backgroundColor: colors.white,
   },
   linkPill: {
     height: 44,
