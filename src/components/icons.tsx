@@ -100,6 +100,25 @@ export const ChevronsRightIcon: React.FC<IconProps> = (props) => (
   </IconBase>
 );
 
+/** Cuadrícula 2x2 — alterna a vista de lista de tarjetas. */
+export const GridIcon: React.FC<IconProps> = (props) => (
+  <IconBase {...props}>
+    <Path d="M4 4h6.5v6.5H4z" />
+    <Path d="M13.5 4H20v6.5h-6.5z" />
+    <Path d="M4 13.5h6.5V20H4z" />
+    <Path d="M13.5 13.5H20V20h-6.5z" />
+  </IconBase>
+);
+
+/** Tarjeta central con laterales — alterna a vista carrusel. */
+export const CarouselIcon: React.FC<IconProps> = (props) => (
+  <IconBase {...props}>
+    <Path d="M7.5 5h9v14h-9z" />
+    <Path d="M3.5 8.5v7" />
+    <Path d="M20.5 8.5v7" />
+  </IconBase>
+);
+
 export const CloseIcon: React.FC<IconProps> = (props) => (
   <IconBase {...props}>
     <Path d="M6 6l12 12" />

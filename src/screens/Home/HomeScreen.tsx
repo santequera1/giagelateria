@@ -21,11 +21,14 @@ import { AppBackground } from '../../components/AppBackground';
 import { MiniCartBar } from '../../components/MiniCartBar';
 import { RappiLogo } from '../../components/RappiLogo';
 import { ProductCard } from '../../components/ProductCard/ProductCard';
+import { GridProductCard } from '../../components/ProductCard/GridProductCard';
 import { WebFrame } from '../../components/WebFrame';
 import { CategoryChip } from '../../components/CategoryChip/CategoryChip';
 import {
   ArrowRightIcon,
   CandyIcon,
+  CarouselIcon,
+  GridIcon,
   IceCreamConeIcon,
   PopsicleIcon,
 } from '../../components/icons';
@@ -52,7 +55,13 @@ const PATTERN_IMAGE = require('../../assets/gia-pattern.jpg');
 const CAROUSEL_INSET = Math.max(16, Math.round((metrics.screen.width - CARD_WIDTH) / 2));
 
 /** Publicaciones embebidas de @giagelateria (iframe oficial de Instagram). */
-const IG_POSTS = ['p/DO3tLdiDn5X', 'reel/DZ5bkHHJ2Yd', 'p/DYUvzmUjodq'] as const;
+const IG_POSTS = [
+  'p/DO3tLdiDn5X',
+  'reel/DZ5bkHHJ2Yd',
+  'p/DYUvzmUjodq',
+  'p/DYcmM1_jhyT',
+  'p/DVerXL3Dj2u',
+] as const;
 
 /** Mapa de Google embebido (sin API key) apuntando al local. */
 const MAP_EMBED_URL = `https://www.google.com/maps?q=${encodeURIComponent(
@@ -107,6 +116,13 @@ export const HomeScreen: React.FC = () => {
   const scrollX = useSharedValue(FEATURED_INDEX * SNAP_INTERVAL);
   const listRef = useRef<FlatList<Product>>(null);
   const [activeChip, setActiveChip] = useState<ChipId>('all');
+  /** Vista de sabores: carrusel destacado o cuadrícula de 2 columnas. */
+  const [viewMode, setViewMode] = useState<'carousel' | 'grid'>('carousel');
+
+  const toggleView = useCallback(() => {
+    haptics.light();
+    setViewMode((prev) => (prev === 'carousel' ? 'grid' : 'carousel'));
+  }, [haptics]);
 
   /** Filtro real por categoría. */
   const filteredProducts = useMemo(
@@ -256,36 +272,56 @@ export const HomeScreen: React.FC = () => {
           </ScrollView>
         </Animated.View>
 
-        {/* Section label + arrow */}
+        {/* Section label + toggle de vista + arrow */}
         <Animated.View entering={FadeInDown.delay(140).duration(420)} style={styles.sectionRow}>
           <Text style={typography.sectionTitle}>Sabores de temporada</Text>
-          <Pressable onPress={scrollNext} hitSlop={10} style={styles.arrowButton}>
-            <ArrowRightIcon size={22} color={colors.primary} strokeWidth={1.8} />
-          </Pressable>
+          <View style={styles.sectionControls}>
+            <Pressable onPress={toggleView} hitSlop={10} style={styles.arrowButton}>
+              {viewMode === 'carousel' ? (
+                <GridIcon size={19} color={colors.primary} strokeWidth={1.8} />
+              ) : (
+                <CarouselIcon size={19} color={colors.primary} strokeWidth={1.8} />
+              )}
+            </Pressable>
+            {viewMode === 'carousel' && (
+              <Pressable onPress={scrollNext} hitSlop={10} style={styles.arrowButton}>
+                <ArrowRightIcon size={22} color={colors.primary} strokeWidth={1.8} />
+              </Pressable>
+            )}
+          </View>
         </Animated.View>
 
-        {/* Featured carousel */}
-        <View style={styles.carouselWrap}>
-          <AnimatedFlatList
-            ref={listRef}
-            data={filteredProducts}
-            horizontal
-            initialScrollIndex={FEATURED_INDEX}
-            renderItem={renderItem}
-            keyExtractor={keyExtractor}
-            getItemLayout={getItemLayout}
-            onScroll={onScroll}
-            scrollEventThrottle={16}
-            snapToInterval={SNAP_INTERVAL}
-            decelerationRate="fast"
-            disableIntervalMomentum
-            showsHorizontalScrollIndicator={false}
-            windowSize={3}
-            initialNumToRender={3}
-            contentContainerStyle={styles.listContent}
-            style={styles.list}
-          />
-        </View>
+        {viewMode === 'carousel' ? (
+          /* Featured carousel */
+          <View style={styles.carouselWrap}>
+            <AnimatedFlatList
+              ref={listRef}
+              data={filteredProducts}
+              horizontal
+              initialScrollIndex={FEATURED_INDEX}
+              renderItem={renderItem}
+              keyExtractor={keyExtractor}
+              getItemLayout={getItemLayout}
+              onScroll={onScroll}
+              scrollEventThrottle={16}
+              snapToInterval={SNAP_INTERVAL}
+              decelerationRate="fast"
+              disableIntervalMomentum
+              showsHorizontalScrollIndicator={false}
+              windowSize={3}
+              initialNumToRender={3}
+              contentContainerStyle={styles.listContent}
+              style={styles.list}
+            />
+          </View>
+        ) : (
+          /* Cuadrícula de 2 columnas */
+          <View style={styles.gridWrap}>
+            {filteredProducts.map((p, i) => (
+              <GridProductCard key={p.id} product={p} index={i} onPress={openProduct} />
+            ))}
+          </View>
+        )}
 
         {/* Precios */}
         <View style={styles.section}>
@@ -451,6 +487,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: metrics.paddingHome,
     marginTop: 26,
   },
+  sectionControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   arrowButton: {
     width: metrics.arrowButton,
     height: metrics.arrowButton,
@@ -460,6 +501,13 @@ const styles = StyleSheet.create({
     borderColor: colors.gold,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  gridWrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 14,
+    paddingHorizontal: metrics.paddingHome,
+    marginTop: 14,
   },
   carouselWrap: {
     marginTop: 6,
