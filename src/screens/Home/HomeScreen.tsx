@@ -65,8 +65,8 @@ const IG_POSTS = [
 /** Póster de ubicación (reemplaza el mapa embebido, que cargaba lento). */
 const UBICACION_IMAGE = require('../../assets/ubicacion.webp');
 
-const IG_CARD_WIDTH = Math.min(270, metrics.screen.width - metrics.paddingHome * 2);
-const IG_CARD_HEIGHT = 310;
+const IG_CARD_WIDTH = Math.min(330, metrics.screen.width - metrics.paddingHome * 2);
+const IG_CARD_HEIGHT = 440;
 
 /** The carousel opens on the featured flavor. */
 const FEATURED_INDEX = productIndexById(FEATURED_PRODUCT_ID);
@@ -570,21 +570,20 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   mapWrap: {
-    borderRadius: 24,
+    borderRadius: 20,
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: colors.chipActiveBorder,
     marginBottom: 14,
     alignSelf: 'center',
-    width: '100%',
-    maxWidth: 220,
   },
   mapPressed: {
     opacity: 0.92,
   },
+  /** Dimensiones fijas: máx ~300px de alto (proporción del póster 460x816). */
   mapImage: {
-    width: '100%',
-    aspectRatio: 460 / 816,
+    width: 170,
+    height: 300,
   },
   igScroll: {
     flexGrow: 0,

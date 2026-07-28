@@ -55,12 +55,7 @@ export const InstagramCard: React.FC<InstagramCardProps> = React.memo(
         onPress={onPress}
         style={({ pressed }) => [styles.card, { width, height }, pressed && styles.pressed]}
       >
-        {/* Miniatura completa, sin recorte (contain sobre fondo blanco) */}
-        <Image
-          source={thumb}
-          style={[styles.thumb, { width, height: height - FOOTER_H }]}
-          resizeMode="contain"
-        />
+        <Image source={thumb} style={[styles.thumb, { width, height }]} resizeMode="cover" />
         <View style={styles.footer}>
           <Text style={styles.handle}>@giagelateria</Text>
           <Text style={styles.cta}>Toca para ver la publicación</Text>
