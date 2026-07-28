@@ -44,7 +44,7 @@ export const InstagramCard: React.FC<InstagramCardProps> = React.memo(
         <WebFrame
           src={`https://www.instagram.com/${post}/embed/captioned/`}
           title={`Instagram — ${post}`}
-          height={height}
+          height={Math.max(height, 480)}
           width={width}
         />
       );
@@ -53,9 +53,14 @@ export const InstagramCard: React.FC<InstagramCardProps> = React.memo(
     return (
       <Pressable
         onPress={onPress}
-        style={({ pressed }) => [{ width, height }, pressed && styles.pressed]}
+        style={({ pressed }) => [styles.card, { width, height }, pressed && styles.pressed]}
       >
-        <Image source={thumb} style={[styles.thumb, { width, height }]} resizeMode="cover" />
+        {/* Miniatura completa, sin recorte (contain sobre fondo blanco) */}
+        <Image
+          source={thumb}
+          style={[styles.thumb, { width, height: height - FOOTER_H }]}
+          resizeMode="contain"
+        />
         <View style={styles.footer}>
           <Text style={styles.handle}>@giagelateria</Text>
           <Text style={styles.cta}>Toca para ver la publicación</Text>
@@ -66,7 +71,13 @@ export const InstagramCard: React.FC<InstagramCardProps> = React.memo(
 );
 InstagramCard.displayName = 'InstagramCard';
 
+/** Altura de la franja inferior "@giagelateria". */
+const FOOTER_H = 54;
+
 const styles = StyleSheet.create({
+  card: {
+    backgroundColor: colors.white,
+  },
   pressed: {
     opacity: 0.92,
   },
@@ -80,7 +91,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    paddingVertical: 10,
+    height: FOOTER_H,
+    justifyContent: 'center',
     paddingHorizontal: 14,
     backgroundColor: 'rgba(52,66,104,0.92)',
   },

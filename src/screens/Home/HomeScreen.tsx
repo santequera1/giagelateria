@@ -65,8 +65,8 @@ const IG_POSTS = [
 /** Póster de ubicación (reemplaza el mapa embebido, que cargaba lento). */
 const UBICACION_IMAGE = require('../../assets/ubicacion.webp');
 
-const IG_CARD_WIDTH = Math.min(330, metrics.screen.width - metrics.paddingHome * 2);
-const IG_CARD_HEIGHT = 440;
+const IG_CARD_WIDTH = Math.min(270, metrics.screen.width - metrics.paddingHome * 2);
+const IG_CARD_HEIGHT = 310;
 
 /** The carousel opens on the featured flavor. */
 const FEATURED_INDEX = productIndexById(FEATURED_PRODUCT_ID);
@@ -333,9 +333,7 @@ export const HomeScreen: React.FC = () => {
                     <Text style={typography.sectionTitle}>{s.label}</Text>
                     <Text style={typography.caption}>{s.description}</Text>
                   </View>
-                  <View style={styles.pricePill}>
-                    <Text style={styles.pricePillText}>{formatPrice(s.price, { space: true })}</Text>
-                  </View>
+                  <Text style={styles.priceText}>{formatPrice(s.price, { space: true })}</Text>
                 </View>
               </View>
             ))}
@@ -561,16 +559,9 @@ const styles = StyleSheet.create({
   priceRowText: {
     gap: 2,
   },
-  pricePill: {
-    height: 36,
-    borderRadius: 18,
-    paddingHorizontal: 16,
-    backgroundColor: colors.gold,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  pricePillText: {
+  priceText: {
     ...typography.cartRowPrice,
+    fontSize: 16,
     color: colors.primary,
   },
   pillsRow: {
@@ -586,7 +577,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
     alignSelf: 'center',
     width: '100%',
-    maxWidth: 360,
+    maxWidth: 220,
   },
   mapPressed: {
     opacity: 0.92,

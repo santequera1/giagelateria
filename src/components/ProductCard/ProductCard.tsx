@@ -159,12 +159,12 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
                 />
               </Animated.View>
 
-              {/* Precio resaltado */}
+              {/* Precio — texto plano para no confundirlo con un botón */}
               <Animated.View style={priceStyle}>
                 <PriceTag
                   value={BASE_PRICE}
                   prefix="Desde "
-                  variant="gold"
+                  variant="plain"
                   textStyle={styles.priceText}
                 />
               </Animated.View>
