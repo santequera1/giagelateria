@@ -13,6 +13,9 @@
     "android": {
       "package": "com.giagelateria.app"
     },
+    "web": {
+      "output": "static"
+    },
     "plugins": ["expo-router"],
     "experiments": {
       "reactCompiler": true
