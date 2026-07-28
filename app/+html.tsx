@@ -75,6 +75,32 @@ export default function Root({ children }: { children: React.ReactNode }) {
         />
         <title>Gia Gelatería</title>
         <link rel="icon" href="/favicon.ico" />
+
+        {/* Vista previa al compartir (WhatsApp, redes) — Open Graph */}
+        <meta
+          name="description"
+          content="Gelato artesanal con alma clásica y sabor inolvidable. Entre el cielo y GIA… me quedo aquí. ✨"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Gia Gelatería" />
+        <meta property="og:title" content="Gia Gelatería — Auténtico Gelato Artesanal" />
+        <meta
+          property="og:description"
+          content="Gelato artesanal con alma clásica y sabor inolvidable. Entre el cielo y GIA… me quedo aquí. ✨"
+        />
+        <meta property="og:url" content="https://giagelateria.com/" />
+        <meta property="og:image" content="https://giagelateria.com/og-image.jpg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:locale" content="es_CO" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Gia Gelatería — Auténtico Gelato Artesanal" />
+        <meta
+          name="twitter:description"
+          content="Gelato artesanal con alma clásica y sabor inolvidable. Entre el cielo y GIA… me quedo aquí. ✨"
+        />
+        <meta name="twitter:image" content="https://giagelateria.com/og-image.jpg" />
+
         <ScrollViewStyleReset />
         <style dangerouslySetInnerHTML={{ __html: LOADER_CSS }} />
       </head>
