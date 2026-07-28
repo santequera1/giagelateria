@@ -27,6 +27,8 @@ import {
   ArrowRightIcon,
   CandyIcon,
   CarouselIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
   GridIcon,
   IceCreamConeIcon,
   PopsicleIcon,
@@ -121,6 +123,21 @@ export const HomeScreen: React.FC = () => {
     haptics.light();
     setViewMode((prev) => (prev === 'carousel' ? 'grid' : 'carousel'));
   }, [haptics]);
+
+  /** Slider de Instagram: desplazamiento con flechas. */
+  const igScrollRef = useRef<ScrollView>(null);
+  const igOffsetRef = useRef(0);
+  const igScrollBy = useCallback(
+    (dir: 1 | -1) => {
+      haptics.light();
+      const step = IG_CARD_WIDTH + 14;
+      const max = step * (IG_POSTS.length - 1);
+      const next = Math.max(0, Math.min(max, igOffsetRef.current + dir * step));
+      igOffsetRef.current = next;
+      igScrollRef.current?.scrollTo({ x: next, animated: true });
+    },
+    [haptics],
+  );
 
   /** Filtro real por categoría. */
   const filteredProducts = useMemo(
@@ -377,13 +394,28 @@ export const HomeScreen: React.FC = () => {
 
         {/* Síguenos */}
         <View style={styles.section}>
-          <SectionHeading title="Síguenos" />
+          <View style={styles.sectionHeadRow}>
+            <SectionHeading title="Síguenos" />
+            <View style={styles.sectionControls}>
+              <Pressable onPress={() => igScrollBy(-1)} hitSlop={10} style={styles.arrowButton}>
+                <ChevronLeftIcon size={20} color={colors.primary} strokeWidth={1.8} />
+              </Pressable>
+              <Pressable onPress={() => igScrollBy(1)} hitSlop={10} style={styles.arrowButton}>
+                <ChevronRightIcon size={20} color={colors.primary} strokeWidth={1.8} />
+              </Pressable>
+            </View>
+          </View>
           <Text style={[typography.caption, styles.sectionText]}>
             {`${BUSINESS.instagramHandle} · WhatsApp ${BUSINESS.whatsappDisplay}`}
           </Text>
           <ScrollView
+            ref={igScrollRef}
             horizontal
             showsHorizontalScrollIndicator={false}
+            onScroll={(e) => {
+              igOffsetRef.current = e.nativeEvent.contentOffset.x;
+            }}
+            scrollEventThrottle={32}
             style={styles.igScroll}
             contentContainerStyle={styles.igRow}
           >
@@ -526,6 +558,11 @@ const styles = StyleSheet.create({
   sectionHeading: {
     marginBottom: 16,
   },
+  sectionHeadRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+  },
   goldBar: {
     width: 46,
     height: 3,
@@ -575,7 +612,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.chipActiveBorder,
     marginBottom: 14,
-    alignSelf: 'center',
+    alignSelf: 'flex-start',
   },
   mapPressed: {
     opacity: 0.92,

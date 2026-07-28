@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import {
   Image,
   ImageSourcePropType,
@@ -29,27 +29,23 @@ export interface InstagramCardProps {
  */
 export const InstagramCard: React.FC<InstagramCardProps> = React.memo(
   ({ post, thumb, width, height }) => {
-    const [embedLoaded, setEmbedLoaded] = useState(false);
-
     const onPress = useCallback(() => {
-      if (Platform.OS === 'web') {
-        setEmbedLoaded(true);
-      } else {
-        Linking.openURL(`https://www.instagram.com/${post}/`);
-      }
+      Linking.openURL(`https://www.instagram.com/${post}/`);
     }, [post]);
 
-    if (embedLoaded) {
+    // Web: el embed real, directo.
+    if (Platform.OS === 'web') {
       return (
         <WebFrame
           src={`https://www.instagram.com/${post}/embed/captioned/`}
           title={`Instagram — ${post}`}
-          height={Math.max(height, 480)}
+          height={height}
           width={width}
         />
       );
     }
 
+    // Nativo: miniatura que abre la app de Instagram.
     return (
       <Pressable
         onPress={onPress}

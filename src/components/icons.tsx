@@ -56,6 +56,12 @@ export const ChevronLeftIcon: React.FC<IconProps> = (props) => (
   </IconBase>
 );
 
+export const ChevronRightIcon: React.FC<IconProps> = (props) => (
+  <IconBase {...props}>
+    <Path d="M9 5l7 7-7 7" />
+  </IconBase>
+);
+
 export const PlusIcon: React.FC<IconProps> = (props) => (
   <IconBase {...props}>
     <Path d="M12 5v14" />
