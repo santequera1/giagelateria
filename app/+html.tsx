@@ -3,6 +3,12 @@ import { ScrollViewStyleReset } from 'expo-router/html';
 
 const LOADER_CSS = `
   body { background-color: #FEF3DE; }
+  /* Nunca permitir paneo horizontal de la página: los carruseles tienen su
+     propio scroll interno; cualquier desborde accidental queda contenido. */
+  html, body, #root {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
   #gia-loader {
     position: fixed;
     inset: 0;
